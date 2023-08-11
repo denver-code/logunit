@@ -1,0 +1,23 @@
+version: '3'
+services:
+  logunit:
+    depends_on:
+      - mongodb
+    build: .
+    volumes:
+      - .:/logunit
+    ports:
+      - '8180:8000'
+    environment:
+      - TZ=Europe/London
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - '27001:27017'
+    volumes:
+      - logsdb:/data/db
+    restart: on-failure
+
+volumes:
+  logsdb:

@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "logunit"
+version = "0.0.1+1"
+description = ""
+authors = ["Ihor Savenko <csigorek@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.101.0"
+uvicorn = "^0.23.2"
+requests = "^2.31.0"
+beanie = "^1.21.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
