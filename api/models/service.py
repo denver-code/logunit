@@ -10,7 +10,8 @@ class Service(Document):
     # 0 - read only
     # 1 - write only
     # 2 - read and write
-
+    access_code: int
+    
     class Settings:
         name = "services"
 
