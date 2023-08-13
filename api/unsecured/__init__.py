@@ -23,7 +23,7 @@ async def log(payload: LogRequest):
 
 @unsecured_router.get("/log/{reference}")
 async def get_log(reference: str): 
-    return await LogModel.get(PydanticObjectId(reference))
+    return (await LogModel.get(PydanticObjectId(reference))).dict()
      
 
 @unsecured_router.get("/logs")
@@ -34,12 +34,16 @@ async def get_logs(service: str = None, level: str = None, limit: int = 100, off
     if level:
         query["level"] = level
         
-    logs = await LogModel.find(query).to_list(1_000_000_000_000_000).skip(offset).limit(limit)
+    logs = LogModel.find(query).skip(offset).limit(limit)
+    logs = await logs.to_list()
+    _logs = []
+    for log in logs:
+        _logs.append(log.dict())
 
     response = {
         "limit": limit,
         "offset": offset,
-        "logs": logs,
-        "total_count": LogModel.find(query).count(),
+        "logs": _logs,
+        "total_count": await LogModel.find(query).count(),
     }
     return response

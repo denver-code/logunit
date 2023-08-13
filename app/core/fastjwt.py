@@ -2,6 +2,7 @@ import jwt
 import datetime
 from os import getenv
 from dotenv import load_dotenv
+from api.models.service import Service
 
 from fastapi import HTTPException, Header
 
@@ -40,6 +41,11 @@ class FastJWT:
 
             if jwt_token["expire"] < int(datetime.datetime.now().timestamp()):
                 raise
+            
+            if "service_name" in jwt_token:
+                service = await Service.find_one({"name": jwt_token["service_name"], "access_code": jwt_token["access_code"]})
+                if not service:
+                    raise
 
         except:
             raise HTTPException(status_code=401, detail="Unauthorised")

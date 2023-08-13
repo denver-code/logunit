@@ -1,5 +1,5 @@
 import time
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Depends, Request, HTTPException
 from os import getenv
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -21,7 +21,7 @@ async def authorise_user(payload: User, request: Request):
     if payload.username == getenv("root_username") and payload.password == getenv("root_password"):
         token = await FastJWT().encode({
                 "username": payload.username,
-                "access": 666
+                "access_code": 666
             })
         return {"token": token}
     else:
@@ -39,25 +39,35 @@ async def authorise_user(payload: User, request: Request):
         return {"status": "error"}
 
 
-@user_router.post("/addService")
+@user_router.post("/addService", dependencies=[Depends(FastJWT().login_required)])
 async def add_service(payload: NewService):
     payload.name = payload.name.replace(" ", "_")
-    if await Service.find_one({"name": payload.name}):
-        raise HTTPException(status_code=409, detail="Service already exists")
+    
     access_code = randint(1000000, 9999999)
+    # if await Service.find_one({"name": payload.name}):
+        # raise HTTPException(status_code=409, detail="Service already exists")
+
+    
+    
     token = await FastJWT().encode({
         "service_name": payload.name,
         "access": payload.access,
         "access_code": access_code,
     })
-    await Service(
-        name=payload.name,
-        description=payload.description,
-        access=payload.access,
-        token=token,
-        access_code=access_code
-    ).save()
     
+    _s = await Service.find_one({"name": payload.name})
+    if not _s:
+        await Service(
+            name=payload.name,
+            description=payload.description,
+            access=payload.access,
+            access_code=access_code
+        ).save()
+    else:
+        _s.access = payload.access
+        _s.access_code = access_code
+        await _s.save()
+        
     return {
         "service_token": token,
         "name": payload.name,

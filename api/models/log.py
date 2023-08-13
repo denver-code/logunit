@@ -8,6 +8,11 @@ class LogRequest(BaseModel):
     payload: dict
 
 
+class SecureLogRequest(BaseModel):
+    level: str
+    payload: str
+
+
 class LogModel(Document):
     service: str
     level: str
@@ -21,7 +26,7 @@ class LogModel(Document):
 class SecureLogModel(Document):
     service: str
     level: str
-    payload: dict
+    payload: str
     date: str
 
     class Settings:
