@@ -232,3 +232,4 @@ pyrightconfig.json
 
 private.pem
 public.pem
+test.py
