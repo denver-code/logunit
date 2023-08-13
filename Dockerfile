@@ -41,4 +41,6 @@ RUN poetry install
 COPY . /app
 
 # Run Application
-CMD [ "poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD [ "poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD entrypoint.sh
+CMD ["sh", "entrypoint.sh"]

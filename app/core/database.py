@@ -4,6 +4,6 @@ from datetime import datetime
 
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    "mongodb://localhost:27017", uuidRepresentation="standard"
+    "mongodb://mongodb:27017", uuidRepresentation="standard"
 )
 db = client["logunit"]
