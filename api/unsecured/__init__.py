@@ -23,7 +23,8 @@ async def log(payload: LogRequest):
 
 @unsecured_router.get("/log/{reference}")
 async def get_log(reference: str): 
-    return (await LogModel.get(PydanticObjectId(reference))).dict()
+    log = await LogModel.get(PydanticObjectId(reference))
+    return log.dict() if log else None
      
 
 @unsecured_router.get("/logs")
